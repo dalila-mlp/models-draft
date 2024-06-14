@@ -1,13 +1,18 @@
 import pickle
-import classeAbstraite
+import datetime
+from classeAbstraite import DynamicParams
 import xgboost as xgb
 
 
-class XGBoostClassifier():
-    def __init__(self):
+class XGBoostClassifier:
+    def __init__(self, params: DynamicParams):
         super().__init__()
-        self.model = xgb.XGBClassifier(objective=classeAbstraite.objective, num_class=classeAbstraite.num_class, eta=classeAbstraite.learning_rate,
-                          max_depth=classeAbstraite.max_depth, min_child_weight=classeAbstraite.min_child_weight, max_leaves=classeAbstraite.max_leaves)
+        self.params = params
+        self.model = xgb.XGBClassifier(num_class=self.params.get_param("num_class"), eta=self.params.get_param("learning_rate"),
+                          max_depth=self.params.get_param("max_depth"), min_child_weight=self.params.get_param("min_child_weight"), max_leaves=self.params.get_param("max_leaves"))
+
+    def getTypeModel(self):
+        return "other"
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
@@ -37,7 +42,16 @@ class XGBoostClassifier():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "XGBoost_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}.pkl"
+
         with open(filename, 'wb') as file:
             pickle.dump(self.model, file)
 

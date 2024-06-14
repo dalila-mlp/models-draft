@@ -1,16 +1,21 @@
 import pickle
-import classeAbstraite
+from classeAbstraite import DynamicParams
+import datetime
 from sklearn.linear_model import LogisticRegression
 
 
-class XGBoostClassifier():
-    def __init__(self):
+class LogisticRegressionClassifier():
+    def __init__(self, params: DynamicParams):
         super().__init__()
+        self.params = params
         self.model = LogisticRegression(
-            C=classeAbstraite.C,
-            max_iter=classeAbstraite.max_iter,
-            solver=classeAbstraite.solver
+            C=self.params.get_param("C"),
+            max_iter=self.params.get_param("max_iter"),
+            solver=self.params.get_param("solver")
         )
+
+    def getTypeModel(self):
+        return "Sk"
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
@@ -40,7 +45,16 @@ class XGBoostClassifier():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "Sk_LogisticRegression_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}.pkl"
+
         with open(filename, 'wb') as file:
             pickle.dump(self.model, file)
 

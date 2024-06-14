@@ -1,16 +1,21 @@
 import pickle
-import classeAbstraite
+from classeAbstraite import DynamicParams
+import datetime
 from sklearn.svm import SVC
 
 
 class SupportVectorMachine():
-    def __init__(self):
+    def __init__(self, params: DynamicParams):
         super().__init__()
+        self.params = params
         self.model = SVC(
-            C=classeAbstraite.C,
-            kernel=classeAbstraite.kernel,
-            gamma=classeAbstraite.gamma
+            C=self.params.get_param("C"),
+            kernel=self.params.get_param("kernel"),
+            gamma=self.params.get_param("gamma")
         )
+
+    def getTypeModel(self):
+        return "Sk"
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
@@ -39,7 +44,16 @@ class SupportVectorMachine():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "Sk_SVMClassifier_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}.pkl"
+
         with open(filename, 'wb') as file:
             pickle.dump(self.model, file)
 

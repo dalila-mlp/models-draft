@@ -1,22 +1,26 @@
-import pickle
-import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-import classeAbstraite
+import datetime
+from classeAbstraite import DynamicParams
 
 
 
 class PMCClassifier():
-    def __init__(self):
+    def __init__(self, params: DynamicParams):
         super().__init__()
+        self.params = params
         self.model = Sequential()
-        self.model.add(Dense(classeAbstraite.hidden_units, activation='relu', input_shape=(classeAbstraite.input_shape,)))
-        for _ in range(classeAbstraite.num_hidden_layers - 1):
-            self.model.add(Dense(classeAbstraite.hidden_units, activation='relu'))
-        self.model.add(Dense(classeAbstraite.num_classes, activation='softmax'))
-        self.model.compile(optimizer=classeAbstraite.optimizer,
-                           loss=classeAbstraite.loss,
+        self.model.add(Dense(self.params.get_param("hidden_units"), activation='relu', input_shape=(
+        self.params.get_param("input_shape"),)))
+        for _ in range(self.params.get_param("num_hidden_layers") - 1):
+            self.model.add(Dense(self.params.get_param("hidden_units"), activation='relu'))
+        self.model.add(Dense(self.params.get_param("num_class"), activation='softmax'))
+        self.model.compile(optimizer=self.params.get_param("optimizer"),
+                           loss=self.params.get_param("loss"),
                            metrics=['accuracy'])
+
+    def getTypeModel(self):
+        return "Tf"
 
     def train(self, x_train, y_train, epochs, batch_size):
         self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size)
@@ -46,7 +50,16 @@ class PMCClassifier():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "Tf_PMCClassifier_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}"
+
         self.model.save(filename)
 
     def summary(self):

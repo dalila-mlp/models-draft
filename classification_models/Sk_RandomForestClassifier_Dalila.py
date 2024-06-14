@@ -1,17 +1,22 @@
 import pickle
-import classeAbstraite
+from classeAbstraite import DynamicParams
+import datetime
 from sklearn.ensemble import RandomForestClassifier
 
 
 class RandomForest():
-    def __init__(self):
+    def __init__(self, params: DynamicParams):
         super().__init__()
+        self.params = params
         self.model = RandomForestClassifier(
-            n_estimators=classeAbstraite.n_estimators,
-            max_depth=classeAbstraite.max_depth,
-            min_samples_split=classeAbstraite.min_samples_split,
-            min_samples_leaf=classeAbstraite.min_samples_leaf
+            n_estimators=self.params.get_param("n_estimators"),
+            max_depth=self.params.get_param("max_depth"),
+            min_samples_split=self.params.get_param("min_samples_split"),
+            min_samples_leaf=self.params.get_param("min_samples_leaf")
         )
+
+    def getTypeModel(self):
+        return "Sk"
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
@@ -41,7 +46,16 @@ class RandomForest():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "Sk_RandomForestClassifier_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}.pkl"
+
         with open(filename, 'wb') as file:
             pickle.dump(self.model, file)
 

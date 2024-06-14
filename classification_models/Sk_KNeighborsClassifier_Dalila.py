@@ -1,17 +1,22 @@
 import pickle
-import classeAbstraite
+import datetime
+from classeAbstraite import DynamicParams
 from sklearn.neighbors import KNeighborsClassifier
 
 
 
 class KNearestNeighbors():
-    def __init__(self):
+    def __init__(self, params: DynamicParams):
         super().__init__()
+        self.params = params
         self.model = KNeighborsClassifier(
-            n_neighbors=classeAbstraite.n_neighbors,
-            algorithm=classeAbstraite.algorithm,
-            leaf_size=classeAbstraite.leaf_size
+            n_neighbors=self.params.get_param("n_neighbors"),
+            algorithm=self.params.get_param("algorithm"),
+            leaf_size=self.params.get_param("leaf_size")
         )
+
+    def getTypeModel(self):
+        return "Sk"
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
@@ -41,7 +46,16 @@ class KNearestNeighbors():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self, filename):
+    def save(self):
+        # Get the current script filename
+        current_filename = "Sk_KNeighborsClassifier_Dalila"
+
+        # Get the current datetime
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a filename with the model name and current datetime
+        filename = f"{current_filename}_{current_datetime}.pkl"
+
         with open(filename, 'wb') as file:
             pickle.dump(self.model, file)
 
