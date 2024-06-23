@@ -1,11 +1,10 @@
 import pickle
 import datetime
-from classeAbstraite import DynamicParams
 import xgboost as xgb
 
 
 class XGBoostClassifier:
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = xgb.XGBClassifier(num_class=self.params.get_param("num_class"), eta=self.params.get_param("learning_rate"),

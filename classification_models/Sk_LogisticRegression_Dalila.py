@@ -1,11 +1,10 @@
 import pickle
-from classeAbstraite import DynamicParams
 import datetime
 from sklearn.linear_model import LogisticRegression
 
 
 class LogisticRegressionClassifier():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = LogisticRegression(

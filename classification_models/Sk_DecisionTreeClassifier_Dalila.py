@@ -1,11 +1,10 @@
 import pickle
 import datetime
-from classeAbstraite import DynamicParams
 from sklearn.tree import DecisionTreeClassifier
 
 
 class DecisionTree():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = DecisionTreeClassifier(

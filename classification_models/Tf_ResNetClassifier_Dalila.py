@@ -2,12 +2,11 @@ from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 import datetime
-from classeAbstraite import DynamicParams
 
 
 
 class ResNetClassifier():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         base_model = ResNet50(weights='imagenet', include_top=False)

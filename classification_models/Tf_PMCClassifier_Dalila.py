@@ -1,12 +1,11 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 import datetime
-from classeAbstraite import DynamicParams
 
 
 
 class PMCClassifier():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = Sequential()

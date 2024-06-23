@@ -1,12 +1,11 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 import datetime
-from classeAbstraite import DynamicParams
 
 
 
 class CNNClassifier():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = Sequential()

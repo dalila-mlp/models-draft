@@ -1,12 +1,11 @@
 import pickle
 import datetime
-from classeAbstraite import DynamicParams
 from sklearn.neighbors import KNeighborsClassifier
 
 
 
 class KNearestNeighbors():
-    def __init__(self, params: DynamicParams):
+    def __init__(self, params):
         super().__init__()
         self.params = params
         self.model = KNeighborsClassifier(
