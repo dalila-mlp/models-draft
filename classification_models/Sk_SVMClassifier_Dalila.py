@@ -43,17 +43,8 @@ class SupportVectorMachine():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self):
-        # Get the current script filename
-        current_filename = "Sk_SVMClassifier_Dalila"
-
-        # Get the current datetime
-        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Create a filename with the model name and current datetime
-        filename = f"{current_filename}_{current_datetime}.pkl"
-
-        with open(filename, 'wb') as file:
+    def save(self, model_id):
+        with open(model_id, 'wb') as file:
             pickle.dump(self.model, file)
 
     def summary(self):

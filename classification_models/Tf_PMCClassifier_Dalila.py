@@ -49,17 +49,8 @@ class PMCClassifier():
         self.y_evaluate = y_evaluate
         return self.model.score(x_evaluate, y_evaluate)
 
-    def save(self):
-        # Get the current script filename
-        current_filename = "Tf_PMCClassifier_Dalila"
-
-        # Get the current datetime
-        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Create a filename with the model name and current datetime
-        filename = f"{current_filename}_{current_datetime}"
-
-        self.model.save(filename)
+    def save(self, model_id):
+        self.model.save(model_id)
 
     def summary(self):
         return self.model.summary()
