@@ -9,7 +9,7 @@ class RidgeRegressionModel():
             alpha=self.params.get_param("alpha"),
             max_iter=self.params.get_param("max_iter"),
             tol=self.params.get_param("tol"),
-            solver=self.params.get_param("tol")
+            solver=self.params.get_param("solver")
         )
 
     def getTypeModel(self):
