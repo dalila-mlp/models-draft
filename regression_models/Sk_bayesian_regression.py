@@ -6,7 +6,7 @@ class BayesianRegressionModel():
         super().__init__()
         self.params = params
         self.model = BayesianRidge(
-            n_iter=self.params.get_param("n_iter"),
+            max_iter=self.params.get_param("max_iter"),
             tol=self.params.get_param("tol"),
             alpha_1=self.params.get_param("alpha_1"),
             alpha_2=self.params.get_param("alpha_2"),

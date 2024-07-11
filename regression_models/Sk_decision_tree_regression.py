@@ -12,6 +12,11 @@ class DecisionTreeRegressionModel():
             max_features=self.params.get_param("max_features")
         )
 
+    def getTypeModel(self):
+        return "Sk"
+
+
+
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)
         self.x_train = x_train
