@@ -1,10 +1,16 @@
 import pickle
 from sklearn.tree import DecisionTreeRegressor
 
-class DecisionTreeRegressionModel(RegressionModel):
-    def __init__(self):
+class DecisionTreeRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = DecisionTreeRegressor()
+        self.params = params
+        self.model = DecisionTreeRegressor(
+            max_depth=self.params.get_param("max_depth"),
+            min_samples_split=self.params.get_param("min_samples_split"),
+            min_samples_leaf=self.params.get_param("min_samples_leaf"),
+            max_features=self.params.get_param("max_features")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

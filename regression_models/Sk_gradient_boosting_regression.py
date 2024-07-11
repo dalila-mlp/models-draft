@@ -1,10 +1,19 @@
 from sklearn.ensemble import GradientBoostingRegressor
 import pickle
 
-class GradientBoostingRegressionModel(RegressionModel):
-    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3):
+class GradientBoostingRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = GradientBoostingRegressor(n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth)
+        self.params = params
+        self.model = GradientBoostingRegressor(
+            n_estimators=self.params.get_param("n_estimators"),
+            learning_rate=self.params.get_param("learning_rate"),
+            max_depth=self.params.get_param("max_depth"),
+            min_samples_split=self.params.get_param("min_samples_split"),
+            min_samples_leaf=self.params.get_param("min_samples_leaf"),
+            subsample=self.params.get_param("subsample"),
+            loss=self.params.get_param("loss")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

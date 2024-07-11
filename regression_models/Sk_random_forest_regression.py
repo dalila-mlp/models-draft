@@ -1,10 +1,18 @@
 import pickle
 from sklearn.ensemble import RandomForestRegressor
 
-class RandomForestRegressionModel(RegressionModel):
-    def __init__(self, n_estimators=100, max_depth=None):
+class RandomForestRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
+        self.params = params
+        self.model = RandomForestRegressor(
+            n_estimators=self.params.get_param("n_estimators"),
+            criterion=self.params.get_param("criterion"),
+            max_depth=self.params.get_param("max_depth"),
+            min_samples_split=self.params.get_param("min_samples_split"),
+            min_samples_leaf=self.params.get_param("min_samples_leaf"),
+            max_features=self.params.get_param("max_features")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

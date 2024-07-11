@@ -1,10 +1,13 @@
 import pickle
 from sklearn.linear_model import LinearRegression
 
-class LinearRegressionModel(RegressionModel):
-    def __init__(self):
+class LinearRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = LinearRegression()
+        self.params = params
+        self.model = LinearRegression(
+            fit_intercept=self.params.get_param("fit_intercept"),
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

@@ -1,10 +1,16 @@
 import pickle
 from sklearn.linear_model import ElasticNet
 
-class ElasticNetRegressionModel(RegressionModel):
-    def __init__(self, alpha=1.0, l1_ratio=0.5):
+class ElasticNetRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = ElasticNet(alpha=alpha, l1_ratio=l1_ratio)
+        self.params = params
+        self.model = ElasticNet(
+            alpha=self.params.get_param("alpha"),
+            l1_ratio=self.params.get_param("l1_ratio"),
+            max_iter=self.params.get_param("max_iter"),
+            tol=self.params.get_param("tol")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

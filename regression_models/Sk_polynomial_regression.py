@@ -3,10 +3,15 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
 
-class PolynomialRegressionModel(RegressionModel):
-    def __init__(self, degree=2):
+class PolynomialRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = make_pipeline(PolynomialFeatures(degree), LinearRegression())
+        self.params = params
+        degree = self.params.get_param("degree")
+        self.model = make_pipeline(
+            PolynomialFeatures(degree),
+            LinearRegression()
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

@@ -1,10 +1,15 @@
 import pickle
 from sklearn.linear_model import Lasso
 
-class LassoRegressionModel(RegressionModel):
-    def __init__(self, alpha=1.0):
+class LassoRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = Lasso(alpha=alpha)
+        self.params = params
+        self.model = Lasso(
+            alpha=self.params.get_param("alpha"),
+            max_iter=self.params.get_param("max_iter"),
+            tol=self.params.get_param("tol")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

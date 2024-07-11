@@ -1,10 +1,16 @@
 from sklearn.linear_model import Ridge
 import pickle
 
-class RidgeRegressionModel(RegressionModel):
-    def __init__(self, alpha=1.0):
+class RidgeRegressionModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = Ridge(alpha=alpha)
+        self.params = params
+        self.model = Ridge(
+            alpha=self.params.get_param("alpha"),
+            max_iter=self.params.get_param("max_iter"),
+            tol=self.params.get_param("tol"),
+            solver=self.params.get_param("tol")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

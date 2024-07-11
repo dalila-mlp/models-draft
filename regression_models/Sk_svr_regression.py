@@ -1,10 +1,16 @@
 import pickle
 from sklearn.svm import SVR
 
-class SVRModel(RegressionModel):
-    def __init__(self, kernel='rbf', C=1.0, epsilon=0.1):
+class SVRModel():
+    def __init__(self, params):
         super().__init__()
-        self.model = SVR(kernel=kernel, C=C, epsilon=epsilon)
+        self.params = params
+        self.model = SVR(
+            kernel=self.params.get_param("kernel"),
+            degree=self.params.get_param("degree"),
+            gamma=self.params.get_param("gamma"),
+            epsilon=self.params.get_param("epsilon")
+        )
 
     def train(self, x_train, y_train):
         self.model.fit(x_train, y_train)

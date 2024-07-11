@@ -1,18 +1,16 @@
 import pickle
-import datetime
 import xgboost as xgb
 
-
-class XGBoostClassifier:
+class XGBoostRegressionModel():
     def __init__(self, params):
         super().__init__()
         self.params = params
-        self.model = xgb.XGBClassifier(
-            num_class=self.params.get_param("num_class"),
-            eta=self.params.get_param("learning_rate"),
+        self.model = xgb.XGBRegressor(
+            n_estimators=self.params.get_param("n_estimators"),
+            learning_rate=self.params.get_param("learning_rate"),
             max_depth=self.params.get_param("max_depth"),
             min_child_weight=self.params.get_param("min_child_weight"),
-            max_leaves=self.params.get_param("max_leaves")
+            subsample=self.params.get_param("subsample"),
         )
 
     def getTypeModel(self):
@@ -29,16 +27,19 @@ class XGBoostClassifier:
         return self.y_predict
 
     def flops_calculation(self):
-        # FLOPS calculation for Decision Tree depends on the tree structure
+        # FLOPS calculation for XGBoost depends on the specific implementation details
         # Providing a generic placeholder
-        return 'Depends on tree structure'
+        return 'Depends on model complexity'
 
     def model_length(self):
-        # Number of parameters in Decision Tree
-        return self.model.tree_.node_count
+        # Number of parameters in the model can be approximated by the number of trees times the depth
+        booster = self.model.get_booster()
+        num_trees = booster.attr('num_trees')
+        max_depth = self.model.max_depth
+        return int(num_trees) * int(max_depth)
 
     def compil(self):
-        # Not applicable for scikit-learn models, but included for compatibility
+        # Not applicable for XGBoost models, but included for compatibility
         pass
 
     def evaluate(self, x_evaluate, y_evaluate):
@@ -51,7 +52,9 @@ class XGBoostClassifier:
             pickle.dump(self.model, file)
 
     def summary(self):
+        booster = self.model.get_booster()
         return {
-            'node_count': self.model.tree_.node_count,
-            'max_depth': self.model.tree_.max_depth
+            'num_trees': booster.attr('num_trees'),
+            'max_depth': self.model.max_depth,
+            'objective': booster.attr('objective')
         }
