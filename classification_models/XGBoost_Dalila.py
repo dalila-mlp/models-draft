@@ -7,8 +7,13 @@ class XGBoostClassifier:
     def __init__(self, params):
         super().__init__()
         self.params = params
-        self.model = xgb.XGBClassifier(num_class=self.params.get_param("num_class"), eta=self.params.get_param("learning_rate"),
-                          max_depth=self.params.get_param("max_depth"), min_child_weight=self.params.get_param("min_child_weight"), max_leaves=self.params.get_param("max_leaves"))
+        self.model = xgb.XGBClassifier(
+            num_class=self.params.get_param("num_class"),
+            eta=self.params.get_param("learning_rate"),
+            max_depth=self.params.get_param("max_depth"),
+            min_child_weight=self.params.get_param("min_child_weight"),
+            max_leaves=self.params.get_param("max_leaves")
+        )
 
     def getTypeModel(self):
         return "other"

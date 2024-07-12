@@ -1,5 +1,6 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+import numpy as np
 import datetime
 
 
@@ -21,10 +22,12 @@ class PMCClassifier():
     def getTypeModel(self):
         return "Tf"
 
-    def train(self, x_train, y_train, epochs, batch_size):
-        self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size)
+    def train(self, x_train, y_train, batch_size):
+        history = self.model.fit(x_train, y_train, epochs=self.params.get_param("epochs"), batch_size=batch_size)
         self.x_train = x_train
         self.y_train = y_train
+
+        return history
 
     def predict(self, x_predict):
         self.x_predict = x_predict
