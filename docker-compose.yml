@@ -1,0 +1,98 @@
+networks:
+  dalila-net:
+    driver: "bridge"
+    name: "dalila-net"
+
+services:
+  dalila-client-service:
+    build:
+      context: "./client/"
+      dockerfile: "./docker/dev/Dockerfile"
+    container_name: "dalila-client-container"
+    networks:
+      - "dalila-net"
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./client/:/client/"
+  dalila-api_php-service:
+    build:
+      context: "./api/"
+      dockerfile: "./docker/dev/php/Dockerfile"
+    container_name: "dalila-api_php-container"
+    depends_on:
+      - "dalila-postgres-service"
+    networks:
+      - "dalila-net"
+    ports:
+      - "9000:9000"
+    volumes:
+      - "./api/:/api/"
+  dalila-api_nginx-service:
+    container_name: "dalila-api_nginx-container"
+    depends_on:
+      - "dalila-api_php-service"
+      - "dalila-postgres-service"
+    image: "nginx:stable-alpine"
+    networks:
+      - "dalila-net"
+    ports:
+      - "80:80"
+    volumes:
+      - "./api/:/api/"
+      - "./api/docker/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+  dalila-postgres-service:
+    container_name: "dalila-postgres-container"
+    environment:
+      PGDATA: "${POSTGRES_DATA}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    image: "postgres"
+    networks:
+      - "dalila-net"
+    ports:
+      - "5432:5432"
+    restart: "always"
+    shm_size: "128mb"  # set shared memory limit when using docker-compose
+    volumes:
+      - "./postgres/:/var/lib/postgresql/"
+  dalila-pgadmin-service:
+    container_name: "dalila-pgadmin-container"
+    depends_on:
+      - "dalila-postgres-service"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD}"
+      PGADMIN_LISTEN_PORT: "80"
+    image: "dpage/pgadmin4:8.5"
+    networks:
+      - "dalila-net"
+    ports:
+      - "8080:80"
+    restart: "always"
+    volumes:
+      - "./pgadmin/docker/dev/servers.json:/pgadmin4/servers.json"
+      - "./pgadmin/:/var/lib/pgadmin/"
+  dalila-models_api-service:
+    build:
+      context: "./models-api/"
+      dockerfile: "./docker/dev/Dockerfile"
+    container_name: "dalila-models_api-container"
+    networks:
+      - "dalila-net"
+    ports:
+      - "14506:14506"
+    volumes:
+      - "./models-api/:/models-api/"
+  dalila-llm_api-service:
+    build:
+      context: "./llm-api/"
+      dockerfile: "./docker/dev/Dockerfile"
+    container_name: "dalila-llm_api-container"
+    networks:
+      - "dalila-net"
+    ports:
+      - "18950:18950"
+    volumes:
+      - "./llm-api/:/llm-api/"

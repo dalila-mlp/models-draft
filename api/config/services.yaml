@@ -1,0 +1,74 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    github_datafiles_repo: '%env(GITHUB_DATAFILES_REPO)%'
+    github_models_repo: '%env(GITHUB_MODELS_REPO)%'
+    github_plots_repo: '%env(GITHUB_PLOTS_REPO)%'
+    github_token: '%env(GITHUB_TOKEN)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    App\Controller\ModelController:
+        arguments:
+            $githubModelsRepo: '%github_models_repo%'
+            $githubPlotsRepo: '%github_plots_repo%'
+            $githubToken: '%github_token%'
+    App\Controller\DatafileController:
+        arguments:
+            $githubDatafilesRepo: '%github_datafiles_repo%'
+            $githubToken: '%github_token%'
+
+    App\Decorator\JwtDecorator:
+        decorates: 'api_platform.openapi.factory'
+        arguments: [ '@.inner' ]
+
+    app.listener.authentication_success_response:
+        class: App\Event\Listener\AuthenticationSuccessListener
+        tags:
+            - {
+                name: kernel.event_listener,
+                event: lexik_jwt_authentication.on_authentication_success,
+                method: onAuthenticationSuccessResponse
+            }
+
+    gedmo.metadata_driver:
+        class: Doctrine\Persistence\Mapping\Driver\MappingDriverChain
+        arguments: [[]]
+        tags:
+            - { name: doctrine.orm.metadata_driver, driver: 'annotation', prefix: 'Gedmo\Mapping\Annotation', entity_manager: 'default' }
+        calls:
+            - method: addDriver
+              arguments:
+                  - '@annotation_reader'
+                  - 'Gedmo\Mapping\Annotation'
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+    
+
+    gedmo.listener.blameable:
+        class: Gedmo\Blameable\BlameableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        arguments:
+            - '@security.token_storage'
